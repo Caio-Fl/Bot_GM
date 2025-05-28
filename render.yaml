@@ -10,15 +10,3 @@ services:
         fromDatabase:
           name: bot-gmgm-secrets
           key: DISCORD_TOKEN
-
-  - type: worker
-    name: bot-gmgm-worker
-    env: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python bot.py
-    envVars:
-      - key: DISCORD_TOKEN
-        fromDatabase:
-          name: bot-gmgm-secrets
-          key: DISCORD_TOKEN

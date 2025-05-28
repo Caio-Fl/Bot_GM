@@ -1,12 +1,12 @@
 import sqlite3
 
-
 def init_db():
     conn = sqlite3.connect('channels.db')
     c = conn.cursor()
     c.execute('''
         CREATE TABLE IF NOT EXISTS channels (
-            id TEXT PRIMARY KEY
+            id TEXT PRIMARY KEY,
+            custom_message TEXT DEFAULT 'gmgm'
         )
     ''')
     conn.commit()
@@ -35,5 +35,4 @@ def get_channels():
     c.execute('SELECT id, custom_message FROM channels')
     results = c.fetchall()
     conn.close()
-    # Retorna lista de tuplas (id, custom_message)
     return results

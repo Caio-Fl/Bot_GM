@@ -1,44 +1,23 @@
 import streamlit as st
 from db import init_db, add_channel, remove_channel, get_channels
-from discord_bot import run_bot
+from bot import run_bot
 from dotenv import load_dotenv
 import multiprocessing
 
 load_dotenv()
 
-def main():
-    # Inicia o bot como processo separado
+# Executa o bot como processo separado (não background)
+if __name__ == "__main__":
+    # Inicia o bot
     bot_process = multiprocessing.Process(target=run_bot)
     bot_process.start()
 
-    # Inicializa banco
+    # Inicia o Streamlit app
     init_db()
 
-    st.set_page_config(page_title="Bot GM - Dashboard", layout="centered")
-    st.title("📡 Painel do Bot GM")
-    # Indicador de atividade (LED)
-    st.markdown("""
-    <style>
-    .led {
-    height: 20px;
-    width: 20px;
-    background-color: #00FF00;
-    border-radius: 50%;
-    display: inline-block;
-    box-shadow: 0 0 10px #00FF00;
-    animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-    0%   {opacity: 1;}
-    50%  {opacity: 0.3;}
-    100% {opacity: 1;}
-    }
-    </style>
-
-    <p><span class="led"></span> <strong>Bot ativo</strong></p>
-    """, unsafe_allow_html=True)
-    st.markdown("Gerencie os canais onde o bot enviará mensagens diariamente.")
+    st.set_page_config(page_title="Bot GMGM - Dashboard", layout="centered")
+    st.title("📡 Painel do Bot GMGM")
+    st.markdown("Gerencie os canais onde o bot enviará mensagens diariamente às 15h.")
 
     st.subheader("🔁 Canais Registrados")
     channels = get_channels()
@@ -59,7 +38,7 @@ def main():
         if new_channel_id.isdigit():
             msg_to_save = new_custom_message.strip() if new_custom_message.strip() else "gmgm"
             add_channel(new_channel_id, msg_to_save)
-            st.success(f"Canal {new_channel_id} cadastrado/atualizado com a mensagem: '{msg_to_save}'")
+            st.success(f"Canal {new_channel_id} cadastrado/atualizado com a mensagem: \"{msg_to_save}\"")
         else:
             st.error("ID do canal inválido. Deve conter apenas números.")
 
@@ -73,6 +52,3 @@ def main():
             st.success(f"Canal {selected} removido!")
     else:
         st.info("Nenhum canal para remover.")
-
-if __name__ == "__main__":
-    main()

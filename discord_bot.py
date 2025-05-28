@@ -3,26 +3,26 @@ import requests
 import datetime
 import time
 from db import get_channels, init_db
+from dotenv import load_dotenv
 
-# Configuração do horário fixo
-SEND_HOUR = 19      # 20 horas (8 da noite)
-SEND_MINUTE = 25     # 00 minutos
+load_dotenv()
+
+SEND_HOUR = 20
+SEND_MINUTE = 16
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 HEADERS = {
-    "Authorization": f"Bot {TOKEN}",
+    "Authorization": f"{TOKEN}",
     "Content-Type": "application/json"
 }
-
+print(HEADERS)
 BASE_URL = "https://discord.com/api/v9/"
 
 def send_gmgm():
-    channels = get_channels()  # [(channel_id, custom_message), ...]
-
+    channels = get_channels()
     for channel_id, custom_message in channels:
         url = f"{BASE_URL}/channels/{channel_id}/messages"
         content = custom_message.strip() if custom_message and custom_message.strip() else "gmgm"
-
         payload = {"content": content}
 
         try:
@@ -34,21 +34,24 @@ def send_gmgm():
         except Exception as e:
             print(f"❌ Exceção ao enviar para {channel_id}: {e}")
 
-if __name__ == "__main__":
+def run_bot():
     print("📡 Bot GMGM rodando. Aguardando o horário de envio...")
     init_db()
     last_sent_date = None
 
     while True:
         now = datetime.datetime.now()
-        print(f"monitoring: " {now})
+        print(f"monitorando: {now}")
         if (
             now.hour == SEND_HOUR and
             now.minute == SEND_MINUTE and
             now.date() != last_sent_date
         ):
-            print(f"sending")
+            print("📤 Enviando mensagens...")
             send_gmgm()
             last_sent_date = now.date()
 
-        time.sleep(1)  # verifica a cada minuto
+        time.sleep(30)
+
+if __name__ == "__main__":
+    run_bot()
