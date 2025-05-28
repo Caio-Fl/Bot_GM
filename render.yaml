@@ -4,9 +4,12 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run dashboard.py --server.port $PORT
+    startCommand: streamlit run dashboard.py --server.port $PORT --server.address=0.0.0.0
     envVars:
       - key: DISCORD_TOKEN
+        fromDatabase:
+          name: bot-gmgm-secrets
+          key: DISCORD_TOKEN
 
   - type: worker
     name: bot-gmgm-worker
@@ -16,3 +19,6 @@ services:
     startCommand: python bot.py
     envVars:
       - key: DISCORD_TOKEN
+        fromDatabase:
+          name: bot-gmgm-secrets
+          key: DISCORD_TOKEN
