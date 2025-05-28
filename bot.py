@@ -2,32 +2,53 @@ import os
 import requests
 import datetime
 import time
-from db import get_channels, init_db  # get_channels agora retorna webhooks
+from db import get_channels, init_db
 
-# Inicializa banco
-init_db()
+# Configuração do horário fixo
+SEND_HOUR = 19      # 20 horas (8 da noite)
+SEND_MINUTE = 25     # 00 minutos
+
+TOKEN = os.getenv("DISCORD_TOKEN")
+HEADERS = {
+    "Authorization": f"Bot {TOKEN}",
+    "Content-Type": "application/json"
+}
+
+BASE_URL = "https://discord.com/api/v9/"
 
 def send_gmgm():
-    now = datetime.datetime.now()
-    if now.hour != 9:
-        print("⏱️ Não é hora de enviar gmgm ainda.")
-        return
+    channels = get_channels()  # [(channel_id, custom_message), ...]
 
-    channels = get_channels()  # webhooks
+    for channel_id, custom_message in channels:
+        url = f"{BASE_URL}/channels/{channel_id}/messages"
+        content = custom_message.strip() if custom_message and custom_message.strip() else "gmgm"
 
-    for webhook_url in channels:
+        payload = {"content": content}
+
         try:
-            response = requests.post(webhook_url, json={"content": "gmgm"})
-            if response.status_code == 204:
-                print(f"✅ Mensagem enviada para {webhook_url}")
+            response = requests.post(url, headers=HEADERS, json=payload)
+            if response.status_code in [200, 201]:
+                print(f"✅ '{content}' enviado para canal {channel_id}")
             else:
-                print(f"⚠️ Falha ao enviar para {webhook_url}: {response.status_code}")
+                print(f"⚠️ Erro ao enviar para {channel_id}: {response.status_code} - {response.text}")
         except Exception as e:
-            print(f"❌ Erro ao enviar para {webhook_url}: {e}")
+            print(f"❌ Exceção ao enviar para {channel_id}: {e}")
 
-# Loop manual simples
 if __name__ == "__main__":
-    print("📡 Bot GMGM iniciado...")
+    print("📡 Bot GMGM rodando. Aguardando o horário de envio...")
+    init_db()
+    last_sent_date = None
+
     while True:
-        send_gmgm()
-        time.sleep(3600)  # verifica a cada hora
+        now = datetime.datetime.now()
+        print(f"monitoring: " {now})
+        if (
+            now.hour == SEND_HOUR and
+            now.minute == SEND_MINUTE and
+            now.date() != last_sent_date
+        ):
+            print(f"sending")
+            send_gmgm()
+            last_sent_date = now.date()
+
+        time.sleep(1)  # verifica a cada minuto

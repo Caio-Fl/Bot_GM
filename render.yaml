@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: bot-gmgm-dashboard
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard.py --server.port $PORT
+    envVars:
+      - key: DISCORD_TOKEN
+
+  - type: worker
+    name: bot-gmgm-worker
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: DISCORD_TOKEN
