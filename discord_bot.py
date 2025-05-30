@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SEND_HOUR = 8
-SEND_MINUTE = 35
+SEND_HOUR = 5
+SEND_MINUTE = 58
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 HEADERS = {
@@ -51,7 +51,7 @@ def run_bot():
             send_gmgm()
             last_sent_date = now.date()
 
-        time.sleep(30)
+        time.sleep(10)
 
 if __name__ == "__main__":
     run_bot()
