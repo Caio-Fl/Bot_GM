@@ -12,11 +12,12 @@ from dotenv import load_dotenv
 
 # Define timezone para São Paulo (UTC-3)
 os.environ['TZ'] = 'America/Sao_Paulo'
-time.tzset()
+#time.tzset()
 
 load_dotenv()
 
 def main():
+    st.set_page_config(page_title="Bot GM - Dashboard", layout="centered")
     # Inicia o bot como uma thread em segundo plano (compatível com Render)
     bot_thread = threading.Thread(target=run_bot, daemon=True)
     bot_thread.start()
@@ -30,7 +31,7 @@ def main():
     # Hora atual no Brasil
     brazil_time = datetime.now(pytz.timezone('America/Sao_Paulo'))
 
-    st.set_page_config(page_title="Bot GM - Dashboard", layout="centered")
+    
     st.title("📡 Painel do Bot GM")
 
     st.markdown(f"🕒 Horário atual no Brasil (UTC-3): **{brazil_time.strftime('%d/%m/%Y %H:%M:%S')}**")
