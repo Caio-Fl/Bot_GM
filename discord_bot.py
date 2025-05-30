@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SEND_HOUR = 8
-SEND_MINUTE = 20
+SEND_MINUTE = 35
 
 TOKEN = os.getenv("DISCORD_TOKEN")
 HEADERS = {
