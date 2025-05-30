@@ -15,7 +15,7 @@ HEADERS = {
     "Authorization": f"{TOKEN}",
     "Content-Type": "application/json"
 }
-print(HEADERS)
+
 BASE_URL = "https://discord.com/api/v9/"
 
 def send_gmgm():
