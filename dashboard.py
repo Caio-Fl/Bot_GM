@@ -7,7 +7,7 @@ import pytz
 from streamlit_autorefresh import st_autorefresh
 
 from db import init_db, add_channel, remove_channel, get_channels
-from discord_bot import run_bot
+from discord_bot import run_bot, send_gmgm
 from dotenv import load_dotenv
 
 # Define timezone para São Paulo (UTC-3)
@@ -94,6 +94,13 @@ def main():
             st.success(f"Canal {selected} removido!")
     else:
         st.info("Nenhum canal para remover.")
+    
+    st.markdown("---")
+    st.subheader("🚀 Enviar Mensagem Agora")
+
+    if st.button("Enviar mensagem manualmente para todos os canais"):
+        send_gmgm()
+        st.success("Mensagens enviadas manualmente com sucesso!")
 
 if __name__ == "__main__":
     main()
